@@ -2,9 +2,10 @@
 
 *A standard library for the unhinged tiny dev.*
 
-StdLib currently ships five verified Godot 4.6 modules: return values,
-collections, algorithms, signal helpers, and the testing framework used to
-validate them. Additional modules will be added after they have been reviewed.
+StdLib currently ships six verified Godot 4.6 modules: return values,
+collections, algorithms, fixed-step timers, signal helpers, and the testing
+framework used to validate them. Additional modules will be added after they
+have been reviewed.
 
 ```gdscript
 var stack: StdStack = StdStack.new()
@@ -24,11 +25,12 @@ The parent plugin enables these module subplugins in dependency order:
 1. `std-returns`
 2. `std-collections`
 3. `std-algorithms`
-4. `std-signals`
-5. `std-tests`
+4. `std-timer`
+5. `std-signals`
+6. `std-tests`
 
 These modules expose global `class_name` types and do not register autoloads.
-Disabling the parent plugin disables the five module subplugins in reverse
+Disabling the parent plugin disables the six module subplugins in reverse
 order.
 
 ## Modules
@@ -41,6 +43,8 @@ order.
 - **[StdAlgorithms](docs/StdAlgorithms.md)** — BFS, DFS, Dijkstra, iterative
   deepening search, topological sorting, stable array sorting, and reusable
   comparison callables.
+- **[StdTimer](docs/StdTimer.md)** — a fixed-step simulation clock and a
+  tick-denominated countdown with distinct completion and cancellation states.
 - **[StdSignals](docs/StdSignals.md)** — idempotent, result-returning helpers for
   connecting and disconnecting Godot signals.
 - **[StdTests](docs/StdTests.md)** — synchronous and coroutine tests, lifecycle
@@ -58,6 +62,7 @@ godot4.6 --headless \
 	addons/std_lib/std-returns \
 	addons/std_lib/std-collections \
 	addons/std_lib/std-algorithms \
+	addons/std_lib/std-timer \
 	addons/std_lib/std-signals \
 	addons/std_lib/std-tests
 ```
