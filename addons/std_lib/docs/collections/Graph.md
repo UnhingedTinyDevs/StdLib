@@ -109,7 +109,7 @@ Returns `ok(true)` when an edge is added or its weight changes, `ok(false)` when
 same weight, and `err` for a missing vertex or negative weight. In an undirected graph, the weight is updated for
 both vertex orders while the logical edge count remains one.
 
-### `pop_edge(from_vertex: Variant, to_vertex: Variant) -> StdOption`
+### ```gdscript pop_edge(from_vertex: Variant, to_vertex: Variant) -> StdOption```
 
 Removes an edge and returns its weight, or `none` when absent. In an undirected graph, either vertex order removes
 both adjacency entries.
