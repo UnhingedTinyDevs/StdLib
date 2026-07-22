@@ -6,14 +6,17 @@ extends IStdPushCollection
 ## values are their occurrence counts. Unlike a [StdSet], pushing a value that is
 ## already present adds another occurrence.
 ##
-## Because a bag has no ordering, [method pop] and [method mutate] select a random
-## occurrence using the [RandomNumberGenerator] supplied at construction. Repeated
-## values are naturally weighted by their occurrence counts. [method peek] returns
-## a snapshot of every occurrence instead of identifying a next value.
+## Because a bag has no ordering, [method sample], [method pop], and [method mutate]
+## select a random occurrence using the [RandomNumberGenerator] supplied at
+## construction. Repeated values are naturally weighted by their occurrence counts.
+## [method sample] leaves the selected occurrence in the bag, while [method pop]
+## removes it. [method peek] returns a snapshot of every occurrence instead of
+## identifying a next value.
 ## [codeblock lang=gdscript]
 ##     var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 ##     var bag: StdBag = StdBag.from_array(["common", "common", "rare"], rng)
-##     bag.pop() # Removes one weighted random occurrence.
+##     bag.sample() # Selects one weighted random occurrence.
+##     bag.pop()    # Selects and removes one weighted random occurrence.
 ## [/codeblock]
 
 
@@ -53,6 +56,12 @@ func push_n(item: Variant, n: int = 1) -> void:
 	if size() != old_size:
 		size_changed.emit(size())
 	return
+
+
+## Selects one random occurrence without removing it, or [code]none[/code] when
+## the bag is empty. A successful sample advances the bag's generator.
+func sample() -> StdOption:
+	return _random_item()
 
 
 ## Removes and returns one random occurrence, or [code]none[/code] when the

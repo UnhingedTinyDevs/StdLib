@@ -21,7 +21,7 @@ Choose a structure by the ordering guarantee your code needs:
 | [`StdGraph`](collections/Graph.md) | Directed or undirected weighted edges | Average O(1) adjacency lookup |
 | [`StdRedBlackTree`](collections/RedBlackTree.md) | Comparator order | O(log n) lookup/update |
 | [Linked lists](collections/Lists.md) | Head-to-tail | O(1) end operations |
-| [`StdBag`](collections/Bag.md) | Unordered, random removal | O(1) count; O(k) random selection |
+| [`StdBag`](collections/Bag.md) | Unordered, random sampling and removal | O(1) count; O(k) random selection |
 | [`StdObjectPool`](collections/ObjectPool.md) | Reusable `Node` ownership | O(1) acquire/release |
 
 ## Example usage

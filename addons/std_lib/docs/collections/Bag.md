@@ -8,9 +8,9 @@ An unordered multiset with occurrence-weighted random removal.
 
 ## Description
 
-Unlike `StdSet`, a Bag retains duplicates. `pop()` chooses one occurrence using the supplied
+Unlike `StdSet`, a Bag retains duplicates. `sample()` and `pop()` choose one occurrence using the supplied
 `RandomNumberGenerator`, so an item stored three times is three times as likely to be selected as an item stored
-once. The selected occurrence is removed.
+once. `sample()` leaves the selected occurrence in the Bag; `pop()` removes it.
 
 `size()` is the number of unique values. `items()` is the total occurrence count. Snapshot order is not
 semantic and must not be used to predict random draws.
@@ -22,7 +22,8 @@ var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 rng.seed = 42
 var loot: StdBag = StdBag.from_array(["coin", "coin", "potion"], rng)
 loot.count("coin") # 2
-loot.pop()         # one weighted random occurrence
+loot.sample()      # selects one weighted random occurrence
+loot.pop()         # selects and removes one weighted random occurrence
 ```
 
 ## Signals
@@ -50,6 +51,7 @@ This class exposes no public properties. The generator is supplied during constr
 | `StdBag` | `StdBag(rng: RandomNumberGenerator)` |
 | `void` | `push(item: Variant)` |
 | `void` | `push_n(item: Variant, n: int = 1)` |
+| `StdOption` | `sample()` |
 | `StdOption` | `pop()` |
 | `StdOption` | `pop_item(item: Variant)` |
 | `int` | `pop_all(item: Variant)` |
@@ -79,6 +81,11 @@ Adds one occurrence in average O(1).
 ### `push_n(item: Variant, n: int = 1) -> void`
 
 Adds `n` occurrences. Non-positive values are a no-op.
+
+### `sample() -> StdOption`
+
+Selects one occurrence using count weighting without removing it, or returns `none` when empty. A successful
+sample advances the Bag's generator.
 
 ### `pop() -> StdOption`
 

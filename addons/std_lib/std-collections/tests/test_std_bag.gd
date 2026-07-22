@@ -14,6 +14,7 @@ func _test_empty_bag() -> void:
 	assert_eq(bag.size(), 0, "empty Bag has no unique values")
 	assert_eq(bag.items(), 0, "empty Bag has no occurrences")
 	assert_true(bag.peek().is_none(), "empty peek is none")
+	assert_true(bag.sample().is_none(), "empty sample is none")
 	assert_true(bag.pop().is_none(), "empty pop is none")
 	assert_err(bag.mutate(func(value: Variant) -> Variant: return value), "empty mutate errors")
 	return
@@ -50,7 +51,17 @@ func _test_push_n_bounds_and_targeted_removal() -> void:
 	return
 
 
-func _test_pop_and_draw_remove_one_occurrence() -> void:
+func _test_sample_uses_occurrence_weights_without_removing() -> void:
+	var bag: StdBag = StdBag.from_array(["apple", "apple", "orange"], _seeded())
+	var sampled: Variant = bag.sample().unwrap()
+	assert_true(sampled == "apple" or sampled == "orange", "sample returns a stored value")
+	assert_eq(bag.count("apple"), 2, "sample preserves repeated occurrences")
+	assert_eq(bag.count("orange"), 1, "sample preserves unique occurrences")
+	assert_eq(bag.items(), 3, "sample preserves total occurrences")
+	return
+
+
+func _test_pop_removes_one_occurrence() -> void:
 	var bag: StdBag = StdBag.from_array(["apple", "apple", "orange"], _seeded())
 	var popped: Variant = bag.pop().unwrap()
 	assert_eq(bag.items(), 2, "pop removes one occurrence")

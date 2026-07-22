@@ -2,10 +2,10 @@
 
 *A standard library for the unhinged tiny dev.*
 
-StdLib currently ships seven verified Godot 4.6 modules: return values,
+StdLib currently ships eight verified Godot 4.6 modules: return values,
 collections, algorithms, fixed-step timers, signal helpers, node-tree helpers,
-and the testing framework used to validate them. Additional modules will be
-added after they have been reviewed.
+deterministic random streams, and the testing framework used to validate them.
+Additional modules will be added after they have been reviewed.
 
 ```gdscript
 var stack: StdStack = StdStack.new()
@@ -28,11 +28,12 @@ The parent plugin enables these module subplugins in dependency order:
 4. `std-timer`
 5. `std-signals`
 6. `std-node`
-7. `std-tests`
+7. `std-random`
+8. `std-tests`
 
-These modules expose global `class_name` types and do not register autoloads.
-Disabling the parent plugin disables the seven module subplugins in reverse
-order.
+Most modules expose global `class_name` types. `std-random` additionally
+registers the root `StdRandom` autoload. Disabling the parent plugin disables
+the eight module subplugins in reverse order.
 
 ## Modules
 
@@ -50,6 +51,8 @@ order.
   connecting and disconnecting Godot signals.
 - **[StdNode](docs/StdNode.md)** — typed child and ancestor queries, child
   cleanup, and checks for nodes pending deletion.
+- **[StdRandom](docs/StdRandom.md)** — named deterministic random streams,
+  probability helpers, seeded selection and shuffling, and dice notation.
 - **[StdTests](docs/StdTests.md)** — synchronous and coroutine tests, lifecycle
   hooks, structured assertions, engine diagnostics, and a headless GDScript
   runner.
@@ -68,6 +71,7 @@ godot4.6 --headless \
 	addons/std_lib/std-timer \
 	addons/std_lib/std-signals \
 	addons/std_lib/std-node \
+	addons/std_lib/std-random \
 	addons/std_lib/std-tests
 ```
 
