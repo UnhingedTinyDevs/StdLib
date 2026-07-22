@@ -2,7 +2,7 @@
 
 [← StdLib](../StdLib.md)
 
-Reusable stacks, queues, heaps, sets, bags, trees, linked lists, and object pools for GDScript.
+Reusable stacks, queues, heaps, sets, graphs, bags, trees, linked lists, and object pools for GDScript.
 
 ## Description
 
@@ -18,6 +18,7 @@ Choose a structure by the ordering guarantee your code needs:
 | [`StdQueue`](collections/Queue.md) | First in, first out | Amortized O(1) push/pop |
 | [`StdHeap`](collections/Heap.md) | Integer priority; stable ties | O(log n) push/pop |
 | [`StdSet`](collections/Set.md) | Unique, unordered values | Average O(1) membership |
+| [`StdGraph`](collections/Graph.md) | Directed or undirected weighted edges | Average O(1) adjacency lookup |
 | [`StdRedBlackTree`](collections/RedBlackTree.md) | Comparator order | O(log n) lookup/update |
 | [Linked lists](collections/Lists.md) | Head-to-tail | O(1) end operations |
 | [`StdBag`](collections/Bag.md) | Unordered, random removal | O(1) count; O(k) random selection |
