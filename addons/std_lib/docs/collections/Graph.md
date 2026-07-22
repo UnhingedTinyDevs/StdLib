@@ -145,5 +145,5 @@ edges use mirrored adjacency entries internally, but `edge_size()` counts the pa
 ## Testing
 
 ```sh
-scripts/run-tests addons/std_lib/std-collections/tests/test_std_graph.gd
+godot --headless -s addons/std_lib/std-tests/scripts/std_test_runner.gd --path . -- addons/std_lib/std-collections/tests/test_std_graph.gd
 ```

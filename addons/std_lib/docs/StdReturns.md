@@ -83,7 +83,7 @@ absence is expected.
 ## Testing
 
 ```sh
-scripts/run-tests -m std-returns
+godot --headless -s addons/std_lib/std-tests/scripts/std_test_runner.gd --path . -- addons/std_lib/std-returns
 ```
 
 The suite covers every branch, falsy/null payloads, laziness and identity, subprocess assertions, a forced

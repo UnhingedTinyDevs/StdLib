@@ -138,5 +138,5 @@ and insertion/deletion fixups. These details are internal and should not be used
 ## Testing
 
 ```sh
-scripts/run-tests addons/std_lib/std-collections/tests/test_std_red_black_tree.gd
+godot --headless -s addons/std_lib/std-tests/scripts/std_test_runner.gd --path . -- addons/std_lib/std-collections/tests/test_std_red_black_tree.gd
 ```

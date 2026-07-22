@@ -131,5 +131,5 @@ Returns an independent expanded snapshot. Its order is not semantic.
 ## Testing
 
 ```sh
-scripts/run-tests addons/std_lib/std-collections/tests/test_std_bag.gd
+godot --headless -s addons/std_lib/std-tests/scripts/std_test_runner.gd --path . -- addons/std_lib/std-collections/tests/test_std_bag.gd
 ```

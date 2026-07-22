@@ -144,7 +144,7 @@ Circular list only. Moves the head backward by `steps`. Negative steps rotate le
 ## Testing
 
 ```sh
-scripts/run-tests addons/std_lib/std-collections/tests/test_std_singly_linked_list.gd
-scripts/run-tests addons/std_lib/std-collections/tests/test_std_doubly_linked_list.gd
-scripts/run-tests addons/std_lib/std-collections/tests/test_std_circular_linked_list.gd
+godot --headless -s addons/std_lib/std-tests/scripts/std_test_runner.gd --path . -- addons/std_lib/std-collections/tests/test_std_singly_linked_list.gd
+godot --headless -s addons/std_lib/std-tests/scripts/std_test_runner.gd --path . -- addons/std_lib/std-collections/tests/test_std_doubly_linked_list.gd
+godot --headless -s addons/std_lib/std-tests/scripts/std_test_runner.gd --path . -- addons/std_lib/std-collections/tests/test_std_circular_linked_list.gd
 ```

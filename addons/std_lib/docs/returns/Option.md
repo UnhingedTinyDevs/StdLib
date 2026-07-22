@@ -181,5 +181,5 @@ editor, deterministic fallbacks prevent an opposite-side payload from leaking:
 ## Testing
 
 ```sh
-scripts/run-tests -m std-returns
+godot --headless -s addons/std_lib/std-tests/scripts/std_test_runner.gd --path . -- addons/std_lib/std-returns
 ```

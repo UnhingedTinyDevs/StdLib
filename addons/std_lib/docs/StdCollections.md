@@ -64,7 +64,7 @@ only for successful operations. `size_changed` reports the value returned by tha
 Run the complete module suite:
 
 ```sh
-scripts/run-tests -m std-collections
+godot --headless -s addons/std_lib/std-tests/scripts/std_test_runner.gd --path . -- addons/std_lib/std-collections
 ```
 
 The suite includes deterministic model-based stress tests, boundary checks, empty-state behavior, signal

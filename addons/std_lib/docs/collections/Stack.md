@@ -101,5 +101,5 @@ Returns an independent top-to-bottom snapshot.
 ## Testing
 
 ```sh
-scripts/run-tests addons/std_lib/std-collections/tests/test_std_stack.gd
+godot --headless -s addons/std_lib/std-tests/scripts/std_test_runner.gd --path . -- addons/std_lib/std-collections/tests/test_std_stack.gd
 ```

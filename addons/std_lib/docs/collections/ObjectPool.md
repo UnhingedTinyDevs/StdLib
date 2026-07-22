@@ -124,5 +124,5 @@ pool's ownership with a warning; the caller becomes solely responsible for them.
 ## Testing
 
 ```sh
-scripts/run-tests addons/std_lib/std-collections/tests/test_std_object_pool.gd
+godot --headless -s addons/std_lib/std-tests/scripts/std_test_runner.gd --path . -- addons/std_lib/std-collections/tests/test_std_object_pool.gd
 ```
