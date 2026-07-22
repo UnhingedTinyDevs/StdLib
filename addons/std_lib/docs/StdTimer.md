@@ -29,7 +29,7 @@ var _cooldown_started: StdResult = cooldown.start(20)
 complete tick interval. At 4 ticks per second, `advance(0.5)` emits two ticks.
 Partial intervals remain accumulated for the next call.
 
-`stop()` pauses the clock without discarding its tick count or partial interval.
+`pause()` stops ticking without discarding the clock's tick count or partial interval.
 `reset()` stops it and clears both.
 
 ### Tick countdowns
@@ -84,10 +84,10 @@ func start() -> StdResult
 Starts or resumes the clock. Returns an error when the rate is invalid or the
 clock is already running.
 
-#### `stop`
+#### `pause`
 
 ```gdscript
-func stop() -> void
+func pause() -> void
 ```
 
 Pauses the clock. Its tick count and partial interval are retained.
@@ -125,7 +125,7 @@ func advance(delta: float) -> int
 ```
 
 Accumulates `delta` seconds, emits elapsed ticks, and returns how many fired.
-Returns 0 while stopped or for a negative or non-finite delta.
+Returns 0 while paused or for a negative or non-finite delta.
 
 At most `MAX_TICKS_PER_ADVANCE` ticks fire in one call. When more are pending,
 the clock warns and drops the remaining accumulated time.
@@ -176,11 +176,6 @@ func cancel() -> void
 Stops the countdown, clears its remaining ticks, and leaves it unexpired.
 
 ## Gotchas
-
-### `stop()` and `reset()` are different
-
-Clock `stop()` is a pause. A later `start()` resumes with the existing tick count
-and partial interval. Use `reset()` when the next start must begin from zero.
 
 ### Direct rate assignment bypasses validation
 

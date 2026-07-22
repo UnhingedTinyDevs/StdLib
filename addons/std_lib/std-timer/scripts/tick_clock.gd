@@ -68,9 +68,9 @@ func start() -> StdResult:
 	return StdResult.ok(true)
 
 
-## Halts the clock. The tick count and any partial accumulation are
-## kept; [method start] resumes from here.
-func stop() -> void:
+## Pauses the clock. The tick count and any partial accumulation are kept;
+## [method start] resumes from here.
+func pause() -> void:
 	_running = false
 	set_process(false)
 	return
@@ -78,7 +78,7 @@ func stop() -> void:
 
 ## Stops the clock and zeroes the tick count and accumulator.
 func reset() -> void:
-	stop()
+	pause()
 	_tick = 0
 	_acc = 0.0
 	return
@@ -105,10 +105,10 @@ func set_speed(tps: float) -> StdResult:
 
 ## Advances the accumulator by [param delta] seconds and emits
 ## [signal ticked] once per elapsed tick interval. Returns the number
-## of ticks fired (0 when the clock is stopped or [param delta] is
+## of ticks fired (0 when the clock is paused or [param delta] is
 ## negative). The interval is re-read every iteration, so speed changes
 ## made inside a tick handler apply to the very next tick; a handler
-## calling [method stop] halts the loop immediately. At most
+## calling [method pause] halts the loop immediately. At most
 ## [constant MAX_TICKS_PER_ADVANCE] ticks fire per call — beyond that
 ## the remaining accumulated time is dropped with a warning.
 ## [method _process] delegates here; call it directly to pump the clock
@@ -120,28 +120,36 @@ func advance(delta: float) -> int:
 	if not _running: return 0
 	if not is_finite(delta) or delta < 0.0: return 0
 	if not is_finite(ticks_per_second) or ticks_per_second <= 0.0:
-		push_warning("StdTickClock stopped because ticks_per_second became invalid")
-		stop()
+		push_warning("StdTickClock paused because ticks_per_second became invalid")
+		pause()
 		return 0
+	
 	_acc += delta
 	var fired: int = 0
 	while _running:
 		if not is_finite(ticks_per_second) or ticks_per_second <= 0.0:
-			push_warning("StdTickClock stopped because ticks_per_second became invalid")
-			stop()
+			push_warning("StdTickClock paused because ticks_per_second became invalid")
+			pause()
 			break
 		var interval: float = 1.0 / ticks_per_second
+		
+		#
 		if _acc < interval and not is_equal_approx(_acc, interval):
 			break
+		
+		# if we are above the maximum amount of ticks per advanced.
 		if fired >= MAX_TICKS_PER_ADVANCE:
 			push_warning("StdTickClock dropped %ss of accumulated time after %d ticks in one advance"
 					% [_acc, fired])
 			_acc = 0.0
 			break
+		
 		_acc = maxf(_acc - interval, 0.0)
 		_tick += 1
 		fired += 1
 		ticked.emit(_tick)
 		pass
+	
 	return fired
+
 #endregion Public API

@@ -12,15 +12,15 @@ func _make_clock(tps: float = 4.0) -> StdTickClock:
 	return clock
 
 
-func _test_start_and_stop() -> void:
+func _test_start_and_pause() -> void:
 	var clock: StdTickClock = _make_clock()
 	assert_true(not clock.is_running(), "clock starts stopped")
 	assert_ok(clock.start(), "start ok")
 	assert_true(clock.is_running(), "running after start")
 	assert_err(clock.start(), "double start errs")
-	clock.stop()
-	assert_true(not clock.is_running(), "stopped after stop")
-	assert_ok(clock.start(), "restart after stop ok")
+	clock.pause()
+	assert_true(not clock.is_running(), "paused after pause")
+	assert_ok(clock.start(), "restart after pause ok")
 	clock.free()
 	return
 
@@ -75,11 +75,11 @@ func _test_common_rates_do_not_lose_boundary_ticks() -> void:
 	return
 
 
-func _test_stop_preserves_accumulator() -> void:
+func _test_pause_preserves_accumulator() -> void:
 	var clock: StdTickClock = _make_clock(4.0)
 	assert_ok(clock.start(), "start before pause")
 	assert_eq(clock.advance(0.125), 0, "partial interval buffered")
-	clock.stop()
+	clock.pause()
 	assert_ok(clock.start(), "resume")
 	assert_eq(clock.advance(0.125), 1, "resumed accumulator completes the interval")
 	clock.free()
@@ -125,7 +125,7 @@ func _test_autostart_starts_when_added_to_tree() -> void:
 
 
 func _test_advance_rejects_non_finite_state() -> void:
-	expect_warning("StdTickClock stopped because ticks_per_second became invalid",
+	expect_warning("StdTickClock paused because ticks_per_second became invalid",
 			"invalid live tick rate warns")
 	var clock: StdTickClock = _make_clock()
 	assert_ok(clock.start(), "start for non-finite advance")
@@ -152,12 +152,12 @@ func _test_speed_change_inside_handler_applies_next_tick() -> void:
 	return
 
 
-func _test_stop_inside_handler_halts_loop() -> void:
+func _test_pause_inside_handler_halts_loop() -> void:
 	var clock: StdTickClock = _make_clock(4.0)
-	clock.ticked.connect(func(_tick: int) -> void: clock.stop())
-	assert_ok(clock.start(), "start for handler stop")
-	assert_eq(clock.advance(10.0), 1, "handler stop halts the advance loop")
-	assert_true(not clock.is_running(), "clock stays stopped")
+	clock.ticked.connect(func(_tick: int) -> void: clock.pause())
+	assert_ok(clock.start(), "start for handler pause")
+	assert_eq(clock.advance(10.0), 1, "handler pause halts the advance loop")
+	assert_true(not clock.is_running(), "clock stays paused")
 	clock.free()
 	return
 
