@@ -92,3 +92,4 @@ release-build crash, invalid callback return types, invalid operands, and determ
 ## See also
 
 - [StdCollections](StdCollections.md) — empty `peek()` and `pop()` operations return `StdOption`.
+- [StdSignals](StdSignals.md) — signal connection operations return `StdResult`.

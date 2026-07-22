@@ -2,9 +2,9 @@
 
 *A standard library for the unhinged tiny dev.*
 
-StdLib currently ships three verified Godot 4.6 modules: return values,
-collections, and the testing framework used to validate them. Additional modules
-will be added after they have been reviewed.
+StdLib currently ships four verified Godot 4.6 modules: return values,
+collections, signal helpers, and the testing framework used to validate them.
+Additional modules will be added after they have been reviewed.
 
 ```gdscript
 var stack: StdStack = StdStack.new()
@@ -23,10 +23,11 @@ The parent plugin enables these module subplugins in dependency order:
 
 1. `std-returns`
 2. `std-collections`
-3. `std-tests`
+3. `std-signals`
+4. `std-tests`
 
 These modules expose global `class_name` types and do not register autoloads.
-Disabling the parent plugin disables the three module subplugins in reverse
+Disabling the parent plugin disables the four module subplugins in reverse
 order.
 
 ## Modules
@@ -36,6 +37,8 @@ order.
 - **[StdCollections](docs/StdCollections.md)** — stacks, queues, heaps, sets,
   trees, linked lists, bags, and object pools built around `StdOption` and
   `StdResult`.
+- **[StdSignals](docs/StdSignals.md)** — idempotent, result-returning helpers for
+  connecting and disconnecting Godot signals.
 - **[StdTests](docs/StdTests.md)** — synchronous and coroutine tests, lifecycle
   hooks, structured assertions, engine diagnostics, and a headless GDScript
   runner.
@@ -50,6 +53,7 @@ godot4.6 --headless \
 	--path . -- \
 	addons/std_lib/std-returns \
 	addons/std_lib/std-collections \
+	addons/std_lib/std-signals \
 	addons/std_lib/std-tests
 ```
 

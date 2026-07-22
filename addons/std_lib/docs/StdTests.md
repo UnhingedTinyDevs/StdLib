@@ -262,4 +262,5 @@ godot4.6 --headless \
 ## See also
 
 - [StdReturns](StdReturns.md) — values used by the return assertions.
+- [StdSignals](StdSignals.md) — result-returning signal connection helpers.
 - [StdLib](../StdLib.md) — module index.
