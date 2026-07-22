@@ -147,3 +147,7 @@ edges use mirrored adjacency entries internally, but `edge_size()` counts the pa
 ```sh
 godot --headless -s addons/std_lib/std-tests/scripts/std_test_runner.gd --path . -- addons/std_lib/std-collections/tests/test_std_graph.gd
 ```
+
+## See also
+
+- [StdAlgorithms](../StdAlgorithms.md) — BFS, DFS, Dijkstra, topological sort, and iterative deepening search.
