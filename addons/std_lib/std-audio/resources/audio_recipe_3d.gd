@@ -1,20 +1,10 @@
 class_name StdAudioRecipe3D
-extends "res://addons/std_lib/std-audio/resources/positional_audio_recipe_interface.gd"
-
-@export_group("Location")
-@export var _pos: Vector3
-@export var _radius: float = 1000.0
-
-
-func _init() -> void:
-	_dim = StdAudioRecipeInterface.Dimension.D3
+extends "res://addons/std_lib/std-audio/resources/audio_recipe.gd"
+## Configuration for one positional 3D audio stream.
+##
+## The playback position is supplied to [code]StdAudio.play_3d[/code] or
+## [code]StdAudio.play_3d_id[/code], so one recipe can be reused anywhere.
 
 
-## Returns the configured position, including [constant Vector3.ZERO].
-func pos() -> StdOption:
-	return StdOption.some(_pos)
-
-
-## Returns the configured radius, including [code]0.0[/code].
-func radius() -> StdOption:
-	return StdOption.some(_radius)
+## Maximum distance at which the sound remains audible.
+@export_range(0.001, 100000.0, 0.1, "or_greater") var max_distance: float = 1000.0

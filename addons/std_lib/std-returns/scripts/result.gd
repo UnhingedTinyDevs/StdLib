@@ -216,13 +216,6 @@ func inspect_err(cb: Callable) -> StdResult:
 ## whose failure is worth saying out loud but not worth handling. Audio,
 ## effects, saving and navigation all return results a game would rather log
 ## than die on.
-##
-## [param prefix] labels the line, conventionally the caller's name:
-## [code]"python: no stream on recipe sfx_eat"[/code]. Anything a caller must
-## actually handle should not come here in the first place.
-## [codeblock]
-## var _rv: StdResult = StdAudio.play_oneshot_id(&"sfx_eat").warn("python")
-## [/codeblock]
 func warn(prefix: String = "") -> StdResult:
 	return inspect_err(func(error: Variant) -> void:
 			push_warning("%s%s" % ["%s: " % prefix if not prefix.is_empty() else "", error]))
