@@ -7,6 +7,7 @@ extends EditorPlugin
 const SUBPLUGIN_IDS: PackedStringArray = [
 	"std_lib/std-returns",
 	"std_lib/std-collections",
+	"std_lib/std-fsm",
 	"std_lib/std-algorithms",
 	"std_lib/std-timer",
 	"std_lib/std-signals",
