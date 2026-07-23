@@ -166,30 +166,6 @@ Call `configure_pools` before the first successful playback. Capacities must
 be non-negative; zero disables that category. Capacities remain fixed after
 playback begins. Invalid playback attempts do not lock the configuration.
 
-## Migration from the previous API
-
-| Previous API | Replacement |
-| --- | --- |
-| `play_oneshot(recipe)` | `play(recipe)` and ignore the handle |
-| `play_oneshot_id(id)` | `play_id(id)` and ignore the handle |
-| `StdAudio.stop(handle)` | `handle.stop()` |
-| `_id` / `id()` | `id` |
-| `_stream` / `stream()` | `stream` |
-| `_bus` / `bus()` | `bus` |
-| `_volume` / `volume()` | `volume_db` |
-| `_pos` / `pos()` | Position argument to `play_2d` or `play_3d` |
-| `_radius` / `radius()` | `max_distance` |
-| `one_shot` | Removed; ignore the handle for fire-and-forget |
-| `_type` / `type()` | Removed |
-| `_dim` / `dim()` | Removed; the recipe class determines dimension |
-| `StdAudioPlayer` | Removed; playback belongs to the autoload |
-| `StdAudioBook` | Removed; the registry belongs to the autoload |
-
-Convert the old percentage volume to decibels with:
-
-```gdscript
-recipe.volume_db = -80.0 if old_volume <= 0.0 else linear_to_db(old_volume / 100.0)
-```
 
 ## See also
 
