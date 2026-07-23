@@ -12,6 +12,8 @@ const SUBPLUGIN_IDS: PackedStringArray = [
 	"std_lib/std-signals",
 	"std_lib/std-node",
 	"std_lib/std-random",
+	"std_lib/std-audio",
+	"std_lib/std-effects",
 	"std_lib/std-tests",
 ]
 

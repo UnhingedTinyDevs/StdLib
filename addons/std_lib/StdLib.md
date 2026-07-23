@@ -2,10 +2,11 @@
 
 *A standard library for the unhinged tiny dev.*
 
-StdLib currently ships nine verified Godot 4.6 modules: return values,
+StdLib currently ships ten verified Godot 4.6 modules: return values,
 collections, algorithms, fixed-step timers, signal helpers, node-tree helpers,
-deterministic random streams, pooled audio, and the testing framework used to
-validate them. Additional modules will be added after they have been reviewed.
+deterministic random streams, pooled audio, visual effects, and the testing
+framework used to validate them. Additional modules will be added after they
+have been reviewed.
 
 ```gdscript
 var stack: StdStack = StdStack.new()
@@ -30,11 +31,13 @@ The parent plugin enables these module subplugins in dependency order:
 6. `std-node`
 7. `std-random`
 8. `std-audio`
-9. `std-tests`
+9. `std-effects`
+10. `std-tests`
 
-Most modules expose global `class_name` types. `std-random` and `std-audio`
-additionally register the root `StdRandom` and `StdAudio` autoloads. Disabling
-the parent plugin disables the nine module subplugins in reverse order.
+Most modules expose global `class_name` types. `std-random`, `std-audio`, and
+`std-effects` additionally register the root `StdRandom`, `StdAudio`, and
+`StdEffects` autoloads. Disabling the parent plugin disables the ten module
+subplugins in reverse order.
 
 ## Modules
 
@@ -56,6 +59,8 @@ the parent plugin disables the nine module subplugins in reverse order.
   probability helpers, seeded selection and shuffling, and dice notation.
 - **[StdAudio](docs/StdAudio.md)** — pooled global, 2D, and 3D audio playback
   using reusable recipes and explicit lifecycle handles.
+- **[StdEffects](docs/StdEffects.md)** — pooled sprites and particles plus
+  temporary shader effects, all driven by reusable recipes and handles.
 - **[StdTests](docs/StdTests.md)** — synchronous and coroutine tests, lifecycle
   hooks, structured assertions, engine diagnostics, and a headless GDScript
   runner.
@@ -76,6 +81,7 @@ godot4.6 --headless \
 	addons/std_lib/std-node \
 	addons/std_lib/std-random \
 	addons/std_lib/std-audio \
+	addons/std_lib/std-effects \
 	addons/std_lib/std-tests
 ```
 

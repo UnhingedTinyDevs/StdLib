@@ -1,149 +1,179 @@
 extends Node
-## StdEffects service facade for the std-effects module
+## Pooled visual-effect service for sprites, particles, and shaders.
 ##
-## Owned by the [code]StdLib[/code] autoload and available as
-## [code]StdEffects[/code] when the plugin is enabled. Thin facade over an [code]StdEffectPlayer[/code] (pooled
-## playback) and an [code]StdEffectBook[/code] (recipe registry) instanced as
-## children. Play a recipe directly with [method play],
-## [method play_oneshot], or [method play_on], or register it once and
-## play it anywhere by id with the [code]*_id[/code] variants.
-## [codeblock]
-## var rv: StdResult = StdEffects.play_oneshot(burst_recipe, position)
-## if rv.is_err(): push_warning(rv.unwrap_err())
-## [/codeblock]
+## Register reusable [StdEffectRecipe] resources by id or play concrete recipes
+## directly. Every successful playback returns a [StdEffectHandle]. Ignore the
+## handle for fire-and-forget behavior or retain it for explicit stopping.
 
 
-var _player: StdEffectPlayer
-var _book: StdEffectBook
+## Default number of simultaneous sprite animations.
+const DEFAULT_SPRITE_POOL_SIZE: int = 16
+## Default number of simultaneous particle bursts.
+const DEFAULT_PARTICLE_POOL_SIZE: int = 16
+
+const SpriteEffectPlayer = preload("sprite_effect_player.gd")
+const ParticleEffectPlayer = preload("particle_effect_player.gd")
+const ShaderEffectPlayer = preload("shader_effect_player.gd")
+
+
+var _recipes: Dictionary[StringName, StdEffectRecipe] = {}
+var _sprites: SpriteEffectPlayer
+var _particles: ParticleEffectPlayer
+var _shaders: ShaderEffectPlayer
 
 
 #region Engine Methods
-# Children are created in _init so the facade works before entering
-# the tree (headless tests instance this script directly).
 func _init() -> void:
-	_player = StdEffectPlayer.new()
-	_player.name = "StdEffectPlayer"
-	add_child(_player)
-	_book = StdEffectBook.new()
-	_book.name = "StdEffectBook"
-	add_child(_book)
+	_sprites = SpriteEffectPlayer.new(self, DEFAULT_SPRITE_POOL_SIZE)
+	_particles = ParticleEffectPlayer.new(self, DEFAULT_PARTICLE_POOL_SIZE)
+	_shaders = ShaderEffectPlayer.new(self)
+	return
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_PREDELETE:
+		stop_all()
 	return
 #endregion Engine Methods
 
 
 #region Public API
-## Sets the fixed sprite, particle, and shader pool capacities before
-## first valid playback. See [code]StdEffectPlayer.configure_pools[/code].
+## Sets the fixed sprite and particle pool capacities. Call before the first
+## successful pooled playback. Zero disables that effect type.
 func configure_pools(
-		sprite_size: int = StdEffectPlayer.DEFAULT_SPRITE_POOL_SIZE,
-		particle_size: int = StdEffectPlayer.DEFAULT_PARTICLE_POOL_SIZE,
-		shader_size: int = StdEffectPlayer.DEFAULT_SHADER_POOL_SIZE,
+		sprite_capacity: int = DEFAULT_SPRITE_POOL_SIZE,
+		particle_capacity: int = DEFAULT_PARTICLE_POOL_SIZE,
 ) -> StdResult:
-	return _player.configure_pools(sprite_size, particle_size, shader_size)
+	if _sprites.has_started() or _particles.has_started():
+		return StdResult.err("effect pool capacities cannot change after pooled playback starts")
+	if sprite_capacity < 0 or particle_capacity < 0:
+		return StdResult.err("effect pool capacities cannot be negative")
+	_sprites.configure(sprite_capacity)
+	_particles.configure(particle_capacity)
+	return StdResult.ok(true)
 
 
-## Plays a managed (non one-shot) sprite recipe at [param pos]. On
-## success the ok value is an [code]StdEffectHandle[/code] for [method stop].
-## See [code]StdEffectPlayer.play[/code].
-func play(recipe: StdEffectRecipeInterface, pos: Vector2 = Vector2.ZERO) -> StdResult:
-	return _player.play(recipe, pos)
+## Validates and registers [param recipe] by [member StdEffectRecipe.id].
+## An existing recipe with the same id is replaced.
+func register(recipe: StdEffectRecipe) -> StdResult:
+	var valid: StdResult = _validate_registration(recipe)
+	if valid.is_err(): return valid
+	_recipes[recipe.id] = recipe
+	return StdResult.ok(recipe)
 
 
-## Plays a one-shot sprite or particle recipe fire-and-forget: no
-## handle is returned and the pooled node releases itself when the
-## effect finishes. See [code]StdEffectPlayer.play_oneshot[/code].
-func play_oneshot(recipe: StdEffectRecipeInterface, pos: Vector2 = Vector2.ZERO) -> StdResult:
-	return _player.play_oneshot(recipe, pos)
+## Atomically validates and registers every recipe. Existing registry entries
+## are replaced. Duplicate ids within [param recipes] return an error.
+func register_all(recipes: Array[StdEffectRecipe]) -> StdResult:
+	var pending: Dictionary[StringName, StdEffectRecipe] = {}
+	for recipe: StdEffectRecipe in recipes:
+		var valid: StdResult = _validate_registration(recipe)
+		if valid.is_err(): return valid
+		if pending.has(recipe.id):
+			return StdResult.err("register_all contains duplicate id '%s'" % recipe.id)
+		pending[recipe.id] = recipe
+		pass
+	for id: StringName in pending:
+		_recipes[id] = pending[id]
+		pass
+	return StdResult.ok(pending.size())
 
 
-## Runs a shader recipe on [param target], restoring its original
-## material afterwards. The ok value is an [code]StdEffectHandle[/code]. See
-## [code]StdEffectPlayer.play_on[/code].
-func play_on(recipe: StdEffectRecipeInterface, target: CanvasItem) -> StdResult:
-	return _player.play_on(recipe, target)
-
-
-## Plays the managed recipe registered under [param id]. Errs when no
-## recipe is registered with that id, otherwise behaves like
-## [method play].
-func play_id(id: StringName, pos: Vector2 = Vector2.ZERO) -> StdResult:
-	var fetched: StdOption = _book.fetch(id)
-	if fetched.is_none():
-		return StdResult.err("no recipe registered with id '%s'" % id)
-	return _player.play(fetched.unwrap(), pos)
-
-
-## Plays the one-shot recipe registered under [param id]. Errs when no
-## recipe is registered with that id, otherwise behaves like
-## [method play_oneshot].
-func play_oneshot_id(id: StringName, pos: Vector2 = Vector2.ZERO) -> StdResult:
-	var fetched: StdOption = _book.fetch(id)
-	if fetched.is_none():
-		return StdResult.err("no recipe registered with id '%s'" % id)
-	return _player.play_oneshot(fetched.unwrap(), pos)
-
-
-## Runs the shader recipe registered under [param id] on
-## [param target]. Errs when no recipe is registered with that id,
-## otherwise behaves like [method play_on].
-func play_on_id(id: StringName, target: CanvasItem) -> StdResult:
-	var fetched: StdOption = _book.fetch(id)
-	if fetched.is_none():
-		return StdResult.err("no recipe registered with id '%s'" % id)
-	return _player.play_on(fetched.unwrap(), target)
-
-
-## Registers a recipe for the [code]*_id[/code] variants. See
-## [code]StdEffectBook.register[/code].
-func register(recipe: StdEffectRecipeInterface) -> StdResult:
-	return _book.register(recipe)
-
-
-## Registers every recipe in [param recipes] that is not already registered,
-## and reports how many were added. The [code]StdAudio.register_all[/code] of effects —
-## see there for why skipping duplicates is the whole point.
-##
-## Errs on the first recipe that fails to register, naming it.
-## [codeblock]
-## var _rv: StdResult = StdEffects.register_all(EFFECT_RECIPES).warn("python")
-## [/codeblock]
-func register_all(recipes: Array[StdEffectRecipeInterface]) -> StdResult:
-	var added: int = 0
-	for recipe: StdEffectRecipeInterface in recipes:
-		if recipe == null:
-			return StdResult.err("register_all stopped at <null>: recipe is null")
-		var id: StdOption = recipe.id()
-		if id.is_some_and(func(value: StringName) -> bool: return fetch(value).is_some()):
-			continue
-		var rv: StdResult = register(recipe)
-		if rv.is_err():
-			return rv.map_err(func(e: Variant) -> Variant:
-					return "register_all stopped at %s: %s" % [id.unwrap_or(&"<no id>"), e])
-		added += 1
-	return StdResult.ok(added)
-
-
-## Fetches a registered recipe by id. See [code]StdEffectBook.fetch[/code].
+## Returns the recipe registered under [param id], or [StdOption] none.
 func fetch(id: StringName) -> StdOption:
-	return _book.fetch(id)
+	var recipe: StdEffectRecipe = _recipes.get(id)
+	if recipe == null: return StdOption.none()
+	return StdOption.some(recipe)
 
 
-## Removes and returns a registered recipe. See
-## [code]StdEffectBook.revoke[/code].
+## Removes and returns the recipe registered under [param id], or
+## [StdOption] none.
 func revoke(id: StringName) -> StdOption:
-	return _book.revoke(id)
+	var recipe: StdEffectRecipe = _recipes.get(id)
+	if recipe == null: return StdOption.none()
+	_recipes.erase(id)
+	return StdOption.some(recipe)
 
 
-## Stops a handle returned by [method play] or [method play_on] and
-## returns its private node to its pool. Calling
-## [code]StdEffectHandle.stop[/code] is equivalent.
-func stop(handle: StdEffectHandle) -> StdResult:
-	return _player.stop(handle)
+## Plays a sprite recipe at [param position]. The ok value is a
+## [StdEffectHandle]. Non-looping animations release naturally.
+func play_sprite(
+		recipe: StdSpriteEffectRecipe,
+		position: Vector2 = Vector2.ZERO,
+) -> StdResult:
+	return _sprites.play(recipe, position)
 
 
-## Stops every active pooled effect. See
-## [code]StdEffectPlayer.stop_all[/code].
-func stop_all() -> void:
-	_player.stop_all()
-	return
+## Fetches and plays the sprite recipe registered under [param id].
+func play_sprite_id(
+		id: StringName,
+		position: Vector2 = Vector2.ZERO,
+) -> StdResult:
+	var fetched: StdOption = fetch(id)
+	if fetched.is_none():
+		return StdResult.err("no effect recipe registered with id '%s'" % id)
+	var value: Variant = fetched.unwrap()
+	if value is not StdSpriteEffectRecipe:
+		return StdResult.err("effect recipe '%s' is not a sprite recipe" % id)
+	return _sprites.play(value, position)
+
+
+## Plays a particle recipe at [param position]. The ok value is a
+## [StdEffectHandle], which can be used to stop the burst early.
+func play_particles(
+		recipe: StdParticleEffectRecipe,
+		position: Vector2 = Vector2.ZERO,
+) -> StdResult:
+	return _particles.play(recipe, position)
+
+
+## Fetches and plays the particle recipe registered under [param id].
+func play_particles_id(
+		id: StringName,
+		position: Vector2 = Vector2.ZERO,
+) -> StdResult:
+	var fetched: StdOption = fetch(id)
+	if fetched.is_none():
+		return StdResult.err("no effect recipe registered with id '%s'" % id)
+	var value: Variant = fetched.unwrap()
+	if value is not StdParticleEffectRecipe:
+		return StdResult.err("effect recipe '%s' is not a particle recipe" % id)
+	return _particles.play(value, position)
+
+
+## Applies a shader recipe to [param target]. The ok value is a
+## [StdEffectHandle]. Only one StdEffects shader may own a target at a time.
+func play_shader(recipe: StdShaderEffectRecipe, target: CanvasItem) -> StdResult:
+	return _shaders.play(recipe, target)
+
+
+## Fetches and plays the shader recipe registered under [param id].
+func play_shader_id(id: StringName, target: CanvasItem) -> StdResult:
+	var fetched: StdOption = fetch(id)
+	if fetched.is_none():
+		return StdResult.err("no effect recipe registered with id '%s'" % id)
+	var value: Variant = fetched.unwrap()
+	if value is not StdShaderEffectRecipe:
+		return StdResult.err("effect recipe '%s' is not a shader recipe" % id)
+	return _shaders.play(value, target)
+
+
+## Stops every active effect and returns the number stopped. Handles are
+## invalidated without emitting [signal StdEffectHandle.finished].
+func stop_all() -> int:
+	var stopped: int = _sprites.stop_all()
+	stopped += _particles.stop_all()
+	stopped += _shaders.stop_all()
+	return stopped
 #endregion Public API
+
+
+#region Private Helpers
+func _validate_registration(recipe: StdEffectRecipe) -> StdResult:
+	if recipe == null: return StdResult.err("effect recipe is null")
+	if recipe.id == &"": return StdResult.err("effect recipe has no id")
+	if recipe is StdSpriteEffectRecipe: return _sprites.validate(recipe)
+	if recipe is StdParticleEffectRecipe: return _particles.validate(recipe)
+	if recipe is StdShaderEffectRecipe: return _shaders.validate(recipe)
+	return StdResult.err("unsupported effect recipe type: %s" % recipe)
+#endregion Private Helpers
