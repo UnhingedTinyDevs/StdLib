@@ -1,6 +1,6 @@
 # Std Random
 
-[← StdLib](../StdLib.md)
+[← StdLib](../../../README.md)
 
 Named deterministic random streams behind one session seed, plus helpers for
 common game draws.

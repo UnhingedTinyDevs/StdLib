@@ -1,6 +1,6 @@
 # Std FSM
 
-[← StdLib](../StdLib.md)
+[← StdLib](../../../README.md)
 
 ## Description
 

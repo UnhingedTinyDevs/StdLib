@@ -1,6 +1,6 @@
 # Std Timer
 
-[← StdLib](../StdLib.md)
+[← StdLib](../../../README.md)
 
 A fixed-step clock and a countdown measured in those fixed steps.
 

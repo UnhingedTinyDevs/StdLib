@@ -43,33 +43,33 @@ subplugins in reverse order.
 
 ## Modules
 
-- **[StdReturns](docs/StdReturns.md)** — `StdResult`, `StdOption`, and their shared
+- **[StdReturns](addons/std_lib/docs/StdReturns.md)** — `StdResult`, `StdOption`, and their shared
   return-value contract.
-- **[StdCollections](docs/StdCollections.md)** — stacks, queues, heaps, sets,
+- **[StdCollections](addons/std_lib/docs/StdCollections.md)** — stacks, queues, heaps, sets,
   trees, linked lists, bags, and object pools built around `StdOption` and
   `StdResult`.
-- **[Std Grid](docs/StdGrid.md)** — rectangular board geometry, strict movement,
+- **[Std Grid](addons/std_lib/docs/StdGrid.md)** — rectangular board geometry, strict movement,
   optional edge wrapping, exclusive portals, deterministic placement, and a
   checkerboard renderer.
-- **[Std FSM](docs/StdFsm.md)** — node-based finite state machines with
+- **[Std FSM](addons/std_lib/docs/StdFsm.md)** — node-based finite state machines with
   validated transitions, lifecycle hooks, named lookup, and 2D/3D target
   accessors.
-- **[StdAlgorithms](docs/StdAlgorithms.md)** — BFS, DFS, Dijkstra, iterative
+- **[StdAlgorithms](addons/std_lib/docs/StdAlgorithms.md)** — BFS, DFS, Dijkstra, iterative
   deepening search, topological sorting, stable array sorting, and reusable
   comparison callables.
-- **[StdTimer](docs/StdTimer.md)** — a fixed-step simulation clock and a
+- **[StdTimer](addons/std_lib/docs/StdTimer.md)** — a fixed-step simulation clock and a
   tick-denominated countdown with distinct completion and cancellation states.
-- **[StdSignals](docs/StdSignals.md)** — idempotent, result-returning helpers for
+- **[StdSignals](addons/std_lib/docs/StdSignals.md)** — idempotent, result-returning helpers for
   connecting and disconnecting Godot signals.
-- **[StdNode](docs/StdNode.md)** — typed child and ancestor queries, child
+- **[StdNode](addons/std_lib/docs/StdNode.md)** — typed child and ancestor queries, child
   cleanup, and checks for nodes pending deletion.
-- **[StdRandom](docs/StdRandom.md)** — named deterministic random streams,
+- **[StdRandom](addons/std_lib/docs/StdRandom.md)** — named deterministic random streams,
   probability helpers, seeded selection and shuffling, and dice notation.
-- **[StdAudio](docs/StdAudio.md)** — pooled global, 2D, and 3D audio playback
+- **[StdAudio](addons/std_lib/docs/StdAudio.md)** — pooled global, 2D, and 3D audio playback
   using reusable recipes and explicit lifecycle handles.
-- **[StdEffects](docs/StdEffects.md)** — pooled sprites and particles plus
+- **[StdEffects](addons/std_lib/docs/StdEffects.md)** — pooled sprites and particles plus
   temporary shader effects, all driven by reusable recipes and handles.
-- **[StdTests](docs/StdTests.md)** — synchronous and coroutine tests, lifecycle
+- **[StdTests](addons/std_lib/docs/StdTests.md)** — synchronous and coroutine tests, lifecycle
   hooks, structured assertions, engine diagnostics, and a headless GDScript
   runner.
 

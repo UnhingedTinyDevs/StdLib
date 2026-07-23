@@ -1,6 +1,6 @@
 # Std Signals
 
-[← StdLib](../StdLib.md)
+[← StdLib](../../../README.md)
 
 `StdSignals` provides three idempotent wrappers around Godot signal connections.
 Each method returns a `StdResult`:

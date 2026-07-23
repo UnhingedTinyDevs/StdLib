@@ -1,6 +1,6 @@
 # Std Tests
 
-[← StdLib](../StdLib.md)
+[← StdLib](../../../README.md)
 
 StdTests is the dependency-free framework used to test StdLib. It supports
 synchronous and coroutine tests, lifecycle hooks, structured results, engine
@@ -263,4 +263,4 @@ godot4.6 --headless \
 
 - [StdReturns](StdReturns.md) — values used by the return assertions.
 - [StdSignals](StdSignals.md) — result-returning signal connection helpers.
-- [StdLib](../StdLib.md) — module index.
+- [StdLib](../../../README.md) — module index.

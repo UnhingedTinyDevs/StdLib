@@ -1,6 +1,6 @@
 # StdCollections
 
-[← StdLib](../StdLib.md)
+[← StdLib](../../../README.md)
 
 Reusable stacks, queues, heaps, sets, graphs, bags, trees, linked lists, and object pools for GDScript.
 

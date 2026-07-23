@@ -1,6 +1,6 @@
 # Std Algorithms
 
-[← StdLib](../StdLib.md)
+[← StdLib](../../../README.md)
 
 Graph searches and ordering, stable sorting, and the comparison callables you'd
 otherwise retype in every file.

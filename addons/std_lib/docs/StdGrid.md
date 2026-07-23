@@ -1,6 +1,6 @@
 # Std Grid
 
-[← StdLib](../StdLib.md)
+[← StdLib](../../../README.md)
 
 ## Description
 

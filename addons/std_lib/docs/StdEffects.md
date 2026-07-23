@@ -1,6 +1,6 @@
 # Std Effects
 
-[← StdLib](../StdLib.md)
+[← StdLib](../../../README.md)
 
 `StdEffects` is a pooled visual-effect autoload for sprite animations, particle
 bursts, and temporary shader effects. Recipes hold reusable configuration;

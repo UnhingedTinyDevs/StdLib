@@ -1,6 +1,6 @@
 # StdReturns
 
-[← StdLib](../StdLib.md)
+[← StdLib](../../../README.md)
 
 Explicit success, failure, presence, and absence values for GDScript.
 

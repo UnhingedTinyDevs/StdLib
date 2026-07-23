@@ -1,6 +1,6 @@
 # Std Node
 
-[← StdLib](../StdLib.md)
+[← StdLib](../../../README.md)
 
 Small helpers for typed node-tree queries, clearing a node's children, and
 checking whether a node is still usable.

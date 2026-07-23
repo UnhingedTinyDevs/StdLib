@@ -1,6 +1,6 @@
 # Std Audio
 
-[← StdLib](../StdLib.md)
+[← StdLib](../../../README.md)
 
 `StdAudio` is a pooled audio autoload for global, 2D, and 3D streams. Recipes
 hold reusable stream configuration; playback calls provide transient positions
